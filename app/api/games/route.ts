@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { listGames } from '@/lib/game-storage'
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     const games = listGames()
     return NextResponse.json({
@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
         (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       ),
     })
-  } catch (error) {
+  } catch (_error) {
     return NextResponse.json({ error: 'Failed to fetch games' }, { status: 500 })
   }
 }

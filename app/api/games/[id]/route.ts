@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { findGame, deleteGame } from '@/lib/game-storage'
 
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
@@ -11,13 +11,13 @@ export async function GET(
       return NextResponse.json({ error: 'Game not found' }, { status: 404 })
     }
     return NextResponse.json({ success: true, game })
-  } catch (error) {
+  } catch (_error) {
     return NextResponse.json({ error: 'Failed to fetch game' }, { status: 500 })
   }
 }
 
 export async function DELETE(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
@@ -26,7 +26,7 @@ export async function DELETE(
       return NextResponse.json({ error: 'Game not found' }, { status: 404 })
     }
     return NextResponse.json({ success: true })
-  } catch (error) {
+  } catch (_error) {
     return NextResponse.json({ error: 'Failed to delete game' }, { status: 500 })
   }
 }
