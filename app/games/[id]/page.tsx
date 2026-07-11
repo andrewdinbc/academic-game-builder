@@ -29,7 +29,7 @@ interface Game {
 
 export default function GamePage() {
   const params = useParams()
-  const gameId = params.id as string
+  const gameId = (params?.id ?? '') as string
   const [game, setGame] = useState<Game | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -127,4 +127,5 @@ export default function GamePage() {
     </>
   )
 }
+
 
