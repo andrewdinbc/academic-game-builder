@@ -5,6 +5,14 @@ import { useParams } from 'next/navigation'
 import Navigation from '@/components/Navigation'
 import GamePlayer from '@/components/GamePlayer'
 
+interface GameQuestion {
+  display: string
+  answer: string
+  wrongs: string[]
+  hint?: string
+  emoji?: string
+}
+
 interface Game {
   id: string
   title: string
@@ -15,6 +23,7 @@ interface Game {
   learningOutcomes: string[]
   gameLogic: string
   gameRules: string[]
+  topicPack?: { questions: GameQuestion[] }
   createdAt: string
 }
 
@@ -118,3 +127,4 @@ export default function GamePage() {
     </>
   )
 }
+
