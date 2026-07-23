@@ -19,7 +19,7 @@ Generate a concise game logic (2-3 sentences) that explains how the game works, 
 `
 
   const message = await client.messages.create({
-    model: 'claude-3-5-sonnet-20241022',
+    model: 'claude-sonnet-4-6',
     max_tokens: 300,
     messages: [{ role: 'user', content: prompt }],
   })
@@ -51,7 +51,7 @@ Format as a numbered list, one rule per line.
 `
 
   const message = await client.messages.create({
-    model: 'claude-3-5-sonnet-20241022',
+    model: 'claude-sonnet-4-6',
     max_tokens: 400,
     messages: [{ role: 'user', content: prompt }],
   })
@@ -101,7 +101,7 @@ Rules:
 `
 
   const message = await client.messages.create({
-    model: 'claude-3-5-sonnet-20241022',
+    model: 'claude-sonnet-4-6',
     max_tokens: 2000,
     messages: [{ role: 'user', content: prompt }],
   })
