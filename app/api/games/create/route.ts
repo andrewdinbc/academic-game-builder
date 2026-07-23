@@ -31,9 +31,20 @@ Generate a concise game logic (2-3 sentences) that explains how the game works, 
   return 'Game logic generated.'
 }
 
-async function generateGameRules(formData: any): Promise<string[]> {
+// 2026-07-23, real bug fixed: gameRules used to be generated in a
+// separate, independent parallel call with no knowledge of what
+// generateGameLogic actually decided -- confirmed live, this produced
+// real contradictions (rules said "move back 2 spaces," logic said
+// "back one space"; rules described a board-cycle order the logic
+// never established). Now takes the ALREADY-GENERATED logic text and
+// is explicitly told to write rules consistent with it, not invent
+// its own version of how the game works.
+async function generateGameRules(formData: any, gameLogic: string): Promise<string[]> {
   const prompt = `
-You are an educational game designer. Create 5 clear, concise game rules for a ${formData.complexity} complexity game.
+You are an educational game designer. The game's core logic has ALREADY been decided -- your job is to write 5 rules that are 100% consistent with it, not to reinvent the mechanics.
+
+ALREADY-DECIDED GAME LOGIC (do not contradict this):
+${gameLogic}
 
 Game Details:
 - Title: ${formData.title}
@@ -46,6 +57,7 @@ Generate exactly 5 numbered rules that are:
 2. Educational in nature
 3. Appropriate for ${formData.gradeLevel} grade level
 4. Enforcing good learning practices
+5. Directly consistent with the game logic above -- do not introduce a different movement amount, a different stage order, or any mechanic the logic above didn't establish
 
 Format as a numbered list, one rule per line.
 `
@@ -155,12 +167,16 @@ export async function POST(request: NextRequest) {
 
     const formData = { title, subject, gradeLevel, complexity, description, learningOutcomes, curriculumOutcomes }
 
-    // Run all three generations in parallel - they're independent.
-    const [gameLogic, gameRules, topicPack] = await Promise.all([
+    // gameLogic and topicPack are genuinely independent of each other and
+    // still run in parallel. gameRules is NOT independent -- it must be
+    // written to match whatever gameLogic actually decided, so it runs
+    // after, using the real result instead of guessing at the same
+    // mechanics in parallel and risking a contradiction.
+    const [gameLogic, topicPack] = await Promise.all([
       generateGameLogic(formData),
-      generateGameRules(formData),
       generateTopicPack(formData),
     ])
+    const gameRules = await generateGameRules(formData, gameLogic)
 
     const gameId = `game_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
 
